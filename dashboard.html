@@ -242,6 +242,56 @@ tr:last-child td { border-bottom: 0; }
 .rm-name { font-size: 14px; font-weight: 600; }
 .rm-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .rm-summary { font-size: 13px; color: var(--ink-soft); margin-top: 5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ── DOCUMENT VAULT ── */
+.doc-row { display:flex; align-items:center; gap:14px; padding:13px 16px; border-bottom:1px solid var(--paper-2); transition:background 140ms; cursor:pointer; margin:0 -24px; }
+.doc-row:last-child { border-bottom:0; }
+.doc-row:hover { background:var(--paper); }
+.doc-check { width:22px; height:22px; flex-shrink:0; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; transition:all 140ms; }
+.doc-check.done { background:var(--green); border-color:var(--green); color:#fff; }
+.doc-icon { font-size:18px; flex-shrink:0; width:26px; text-align:center; }
+.doc-label { font-size:14px; font-weight:500; }
+.doc-label.done { text-decoration:line-through; color:var(--muted); }
+
+/* ── APPROVAL ALERTS ── */
+.expiry-alerts { margin-bottom:20px; }
+.approval-alert { display:flex; align-items:center; gap:14px; padding:14px 18px; border-right:4px solid var(--amber); margin-bottom:8px; cursor:pointer; transition:background 140ms; }
+.approval-alert.urgent { background:#FEF2F2; border-right-color:var(--red); }
+.approval-alert.warning { background:#FEF3C7; border-right-color:var(--amber); }
+.approval-alert:hover { filter:brightness(0.97); }
+.approval-alert .aa-icon { font-size:22px; flex-shrink:0; }
+.approval-alert .aa-name { font-size:14px; font-weight:700; color:var(--ink); }
+.approval-alert .aa-sub { font-size:12px; margin-top:2px; }
+.urgent .aa-sub { color:var(--red); }
+.warning .aa-sub { color:var(--amber-deep); }
+.approval-alert .aa-days { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700; margin-right:auto; }
+.urgent .aa-days { color:var(--red); }
+.warning .aa-days { color:var(--amber-deep); }
+
+/* ── BANK REF PANEL ── */
+.bank-ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+.bank-ref-item { background:var(--paper); padding:12px 14px; }
+.bank-ref-lbl { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+.bank-ref-val { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; margin-top:4px; color:var(--ink); }
+.bank-ref-note { font-size:12px; color:var(--muted); margin-top:10px; line-height:1.5; }
+.bank-pill { display:inline-block; width:12px; height:12px; border-radius:50%; margin-left:8px; vertical-align:middle; }
+
+/* ── BANK RATES VIEW ── */
+.rates-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-bottom:24px; }
+.rate-card { background:#fff; border:1px solid var(--line); overflow:hidden; }
+.rate-card-head { padding:16px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--line); }
+.rate-card-color { width:6px; height:44px; border-radius:3px; flex-shrink:0; }
+.rate-card-name { font-size:16px; font-weight:700; }
+.rate-card-body { padding:16px 20px; }
+.rate-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--paper-2); }
+.rate-row:last-child { border-bottom:0; }
+.rate-lbl { font-size:13px; color:var(--muted); }
+.rate-val { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--ink); }
+.rate-note { font-size:12px; color:var(--muted); margin-top:12px; padding-top:12px; border-top:1px solid var(--paper-2); line-height:1.5; }
+.rates-disclaimer { background:var(--paper-2); border:1px solid var(--line); padding:14px 18px; font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:20px; }
+
+/* ── CHARTS ── */
+.chart-wrap { padding:8px 0 4px; }
 </style>
 </head>
 <body>
@@ -288,6 +338,11 @@ tr:last-child td { border-bottom: 0; }
         משימות
         <span class="nav-badge hidden" id="navTaskBadge">0</span>
       </div>
+      <div class="nav-label" style="margin-top:8px;">כלים</div>
+      <div class="nav-item" data-view="rates" onclick="navigate('rates')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        שערי בנקים
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -322,6 +377,7 @@ tr:last-child td { border-bottom: 0; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -342,15 +398,16 @@ const auth = firebase.auth();
 
 /* ─── CONSTANTS ─── */
 const STAGES = {
-  lead:        { label: 'ליד חדש',    color: '#64748B', bg: '#F1F5F9' },
-  meeting:     { label: 'פגישה',      color: '#3B82F6', bg: '#EFF6FF' },
-  analysis:    { label: 'ניתוח',      color: '#8B5CF6', bg: '#F5F3FF' },
-  proposals:   { label: 'הצעות',      color: '#F59E0B', bg: '#FFFBEB' },
-  negotiation: { label: 'משא ומתן',   color: '#F97316', bg: '#FFF7ED' },
-  signed:      { label: 'חתם',        color: '#10B981', bg: '#ECFDF5' },
-  closed:      { label: 'הושלם',      color: '#15803D', bg: '#F0FDF4' },
+  lead:        { label: 'ליד חדש',      color: '#64748B', bg: '#F1F5F9' },
+  meeting:     { label: 'פגישה',        color: '#3B82F6', bg: '#EFF6FF' },
+  paperwork:   { label: 'איסוף ניירת',  color: '#06B6D4', bg: '#ECFEFF' },
+  analysis:    { label: 'ניתוח',        color: '#8B5CF6', bg: '#F5F3FF' },
+  proposals:   { label: 'הצעות',        color: '#F59E0B', bg: '#FFFBEB' },
+  negotiation: { label: 'משא ומתן',     color: '#F97316', bg: '#FFF7ED' },
+  signed:      { label: 'חתם',          color: '#10B981', bg: '#ECFDF5' },
+  closed:      { label: 'הושלם',        color: '#15803D', bg: '#F0FDF4' },
 };
-const STAGE_ORDER = ['lead','meeting','analysis','proposals','negotiation','signed','closed'];
+const STAGE_ORDER = ['lead','meeting','paperwork','analysis','proposals','negotiation','signed','closed'];
 
 const MTG_TYPES = {
   phone:    { label: 'טלפון',    icon: '📞' },
@@ -370,6 +427,29 @@ const TRACKS = [
   { key:'prime',    name:'פריים',  desc:'ריבית משתנה (פריים ± מרווח)', color:'#3B82F6' },
   { key:'katz',     name:'ק"צ',    desc:'ריבית קבועה לא צמודה',       color:'#8B5CF6' },
   { key:'variable', name:'משתנה', desc:'ריבית משתנה צמודת מדד',      color:'#F97316' },
+];
+
+const BANK_REF = {
+  mizrahi:  { name:'מזרחי טפחות',  color:'#C00000', prime:0.0,   kalatz:3.15, katz:2.85, variable:2.20, maxLTV:75, maxTerm:30, notes:'מוביל בקל"צ, מרווח פריים תחרותי, מהיר בעיבוד' },
+  leumi:    { name:'בנק לאומי',    color:'#003E7E', prime:-0.1,  kalatz:3.30, katz:2.95, variable:2.10, maxLTV:70, maxTerm:30, notes:'מסלולים מגוונים לזכאים, שירות דיגיטלי מפותח' },
+  hapoalim: { name:'בנק הפועלים', color:'#E87722', prime:0.1,   kalatz:3.40, katz:3.00, variable:2.30, maxLTV:75, maxTerm:30, notes:'גמישות גבוהה בתמהיל, תהליך אישור גמיש' },
+  discount: { name:'בנק דיסקונט', color:'#0066CC', prime:-0.05, kalatz:3.20, katz:2.90, variable:2.15, maxLTV:70, maxTerm:30, notes:'שירות מהיר, פתרונות דיגיטליים מתקדמים' },
+  otzar:    { name:'אוצר החייל',   color:'#1B6B3A', prime:-0.15, kalatz:3.10, katz:2.80, variable:2.05, maxLTV:75, maxTerm:30, notes:'מתמחה בצבאיים ומשפחות, מרווחים אטרקטיביים' },
+};
+
+const PRIME_BASE = 6.25;
+
+const DOCS = [
+  { key:'id',          label:'תעודת זהות',               icon:'🪪' },
+  { key:'payslip1',    label:'תלוש שכר — חודש 1',        icon:'📄' },
+  { key:'payslip2',    label:'תלוש שכר — חודש 2',        icon:'📄' },
+  { key:'payslip3',    label:'תלוש שכר — חודש 3',        icon:'📄' },
+  { key:'bankstmt',    label:'עו"ש — 3 חודשים',           icon:'🏦' },
+  { key:'approval',    label:'אישור עקרוני',              icon:'✅' },
+  { key:'contract',    label:'חוזה רכישה / זכרון דברים', icon:'📝' },
+  { key:'appraisal',   label:'שמאות נכס',                 icon:'🏠' },
+  { key:'eligibility', label:'אישור זכאות',               icon:'⭐' },
+  { key:'credit',      label:'דו"ח נתוני אשראי',          icon:'📊' },
 ];
 
 /* ─── STATE ─── */
@@ -491,6 +571,7 @@ function renderCurrent() {
     case 'client':    renderClient();    break;
     case 'meetings':  renderMeetings();  break;
     case 'tasks':     renderTasks();     break;
+    case 'rates':     renderRates();     break;
   }
 }
 
@@ -515,7 +596,25 @@ function renderDashboard() {
   const openTasks  = S.tasks.filter(t => !t.done).slice(0,6);
   const recentMtgs = S.meetings.slice(0,5);
 
+  const today = todayStr();
+  const in30 = new Date(); in30.setDate(in30.getDate()+30);
+  const in30s = in30.toISOString().slice(0,10);
+  const expiring = S.clients.filter(c => c.approvalExpiry && c.approvalExpiry >= today && c.approvalExpiry <= in30s && c.stage !== 'closed');
+
   $('viewContent').innerHTML = `
+    ${expiring.length ? `<div class="expiry-alerts">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">⚠️ אישורים עקרוניים שפגות תוקפם</div>
+      ${expiring.map(c => {
+        const days = Math.ceil((new Date(c.approvalExpiry)-new Date(today))/(1000*60*60*24));
+        const urgent = days <= 7;
+        return `<div class="approval-alert ${urgent?'urgent':'warning'}" onclick="navigate('client','${c.id}')">
+          <div class="aa-icon">${urgent?'🚨':'⏰'}</div>
+          <div><div class="aa-name">${c.name}</div><div class="aa-sub">אישור עקרוני פג ב-${fmtDate(c.approvalExpiry)}</div></div>
+          <div class="aa-days">${days}י׳</div>
+          <span style="font-size:12px;color:var(--muted);">←</span>
+        </div>`;
+      }).join('')}
+    </div>` : ''}
     <div class="kpi-grid">
       <div class="kpi-card kpi-amber"><div class="kpi-label">לקוחות פעילים</div><div class="kpi-value">${active.length}</div><div class="kpi-sub">מתוך ${S.clients.length} סה"כ</div></div>
       <div class="kpi-card kpi-blue"><div class="kpi-label">פגישות השבוע</div><div class="kpi-value">${weekMtgs.length}</div><div class="kpi-sub">שתועדו</div></div>
@@ -665,7 +764,7 @@ function renderClient() {
     </div>
 
     <div class="tabs">
-      ${[['overview','סקירה'],['meetings',`פגישות${cms.length?' ('+cms.length+')':''}`],['plan','תוכנית'],['tasks',`משימות${cts.filter(t=>!t.done).length?' ●':''}`]].map(([k,l])=>
+      ${[['overview','סקירה'],['meetings',`פגישות${cms.length?' ('+cms.length+')':''}`],['plan','תוכנית'],['docs',`מסמכים${(()=>{const d=cl.documents||{};const r=DOCS.filter(x=>d[x.key]?.received).length;return r<DOCS.length?` (${r}/${DOCS.length})`:''})()`],['tasks',`משימות${cts.filter(t=>!t.done).length?' ●':''}`]].map(([k,l])=>
         `<div class="tab${tab===k?' active':''}" onclick="S.clientTab='${k}';renderClient()">${l}</div>`
       ).join('')}
     </div>
@@ -674,8 +773,10 @@ function renderClient() {
       ${tab==='overview' ? tabOverview(cl) : ''}
       ${tab==='meetings' ? tabMeetings(cl,cms) : ''}
       ${tab==='plan'     ? tabPlan(cl) : ''}
+      ${tab==='docs'     ? tabDocs(cl) : ''}
       ${tab==='tasks'    ? tabTasks(cl,cts) : ''}
     </div>`;
+  if (tab === 'plan') setTimeout(() => initPlanCharts(cl), 60);
 }
 
 function tabOverview(cl) {
@@ -767,8 +868,29 @@ function tabPlan(cl) {
           }${is==='variable'?' ההמלצה מותאמת להכנסה משתנה — שיעור גבוה יותר של מסלולים קבועים.':''}</p>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">תמהיל — תרשים</div></div>
+        <div style="max-width:200px;margin:8px auto;"><canvas id="mixPieChart"></canvas></div>
+      </div>
     </div>
     <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <div class="card-title">נתוני ייחוס לפי בנק</div>
+          <select class="form-select" id="bankSelector" style="width:auto;font-size:13px;padding:6px 28px 6px 12px;" onchange="updateBankPanel(this.value)">
+            <option value="">— בחר בנק —</option>
+            ${Object.entries(BANK_REF).map(([k,b])=>`<option value="${k}"><span class="bank-pill" style="background:${b.color};"></span>${b.name}</option>`).join('')}
+          </select>
+        </div>
+        <div id="bankPanel"><div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">בחר בנק לצפייה בנתוני ייחוס עדכניים</div></div>
+      </div>
+      ${cl.loanAmount && cl.loanTerm ? `<div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <div class="card-title">לוח סילוקין — גרף</div>
+          <span style="font-size:12px;color:var(--muted);">₪${fmtN(cl.loanAmount)} · ${cl.loanTerm} שנים</span>
+        </div>
+        <div class="chart-wrap"><canvas id="amorChart"></canvas></div>
+      </div>` : ''}
       <div class="card">
         <div class="card-header">
           <div class="card-title">הצעות בנקים</div>
@@ -782,7 +904,7 @@ function tabPlan(cl) {
                 ${props.map((p,i)=>{
                   const best = p.rate===bestRate;
                   return `<tr>
-                    <td><strong>${p.bank}</strong>${best?` <span style="color:var(--green);font-size:12px;font-weight:700;">✓ הטובה</span>`:''}}</td>
+                    <td><strong>${p.bank}</strong>${best?` <span style="color:var(--green);font-size:12px;font-weight:700;">✓ הטובה</span>`:''}</td>
                     <td class="mono" style="text-align:center;color:${best?'var(--green)':'inherit'};font-weight:${best?700:400};">${p.rate}%</td>
                     <td class="mono" style="text-align:center;">${p.monthly?'₪'+fmtN(p.monthly):'—'}</td>
                     <td><button class="btn btn-danger btn-sm" onclick="rmProposal('${cl.id}',${i})">✕</button></td>
@@ -819,6 +941,199 @@ function taskRow(t) {
     ${priBadge(t.priority)}
     <div class="task-due${isOverdue(t.dueDate)&&!t.done?' overdue':isToday(t.dueDate)&&!t.done?' today':''}">${t.dueDate?fmtDate(t.dueDate):''}</div>
   </div>`;
+}
+
+/* ─── DOCUMENT VAULT TAB ─── */
+function tabDocs(cl) {
+  const docs = cl.documents || {};
+  const received = DOCS.filter(d => docs[d.key]?.received).length;
+  const pct = Math.round(received / DOCS.length * 100);
+  const barColor = pct === 100 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
+
+  return `
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-title">התקדמות איסוף מסמכים</div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:${barColor};">${pct}%</span>
+      </div>
+      <div style="background:var(--paper-2);height:10px;border-radius:999px;overflow:hidden;margin-bottom:8px;">
+        <div style="height:100%;width:${pct}%;background:${barColor};border-radius:999px;transition:width 600ms cubic-bezier(.2,.8,.2,1);"></div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);">${received} מתוך ${DOCS.length} מסמכים התקבלו${pct===100?' — ✅ הכל הוגש!':''}</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">רשימת מסמכים</div>
+        <span style="font-size:12px;color:var(--muted);">לחצו לסימון קבלה</span>
+      </div>
+      ${DOCS.map(d => {
+        const rec = !!docs[d.key]?.received;
+        const date = docs[d.key]?.receivedDate;
+        return `<div class="doc-row" onclick="toggleDoc('${cl.id}','${d.key}',${!rec})">
+          <div class="doc-check${rec?' done':''}"> ${rec?'✓':''}</div>
+          <div class="doc-icon">${d.icon}</div>
+          <div style="flex:1;">
+            <div class="doc-label${rec?' done':''}">${d.label}</div>
+            ${date?`<div style="font-size:11px;color:var(--muted);">התקבל ${fmtDate(date)}</div>`:''}
+          </div>
+          <span class="badge" style="background:${rec?'#ECFDF5':'#FEF2F2'};color:${rec?'var(--green)':'var(--red)'};">${rec?'התקבל':'חסר'}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+async function toggleDoc(clientId, docKey, newVal) {
+  const cl = S.clients.find(c => c.id === clientId);
+  if (!cl) return;
+  const docs = cl.documents ? { ...cl.documents } : {};
+  docs[docKey] = { received: newVal, receivedDate: newVal ? todayStr() : null };
+  await db.collection('clients').doc(clientId).update({ documents: docs, updatedAt: ts() });
+}
+
+/* ─── BANK RATES VIEW ─── */
+function renderRates() {
+  $('pageTitle').textContent = 'שערי בנקים';
+  $('breadcrumb').innerHTML = '';
+  $('headerActions').innerHTML = `<span style="font-size:13px;color:var(--muted);">עודכן: ${fmtDate(todayStr())}</span>`;
+
+  const primeRate = PRIME_BASE;
+
+  $('viewContent').innerHTML = `
+    <div class="rates-disclaimer">
+      ℹ️ הנתונים להמחשה בלבד — המרווחים האמיתיים משתנים לפי לקוח, LTV, ותקופה. יש לאמת מול הבנק לפני הגשה.
+    </div>
+    <div style="margin-bottom:16px;">
+      <div class="kpi-card kpi-blue" style="max-width:260px;">
+        <div class="kpi-label">ריבית פריים נוכחית</div>
+        <div class="kpi-value">${primeRate}%</div>
+        <div class="kpi-sub">פריים = בסיס בנק ישראל + 1.5%</div>
+      </div>
+    </div>
+    <div class="rates-grid">
+      ${Object.entries(BANK_REF).map(([k, b]) => `
+        <div class="rate-card">
+          <div class="rate-card-head">
+            <div class="rate-card-color" style="background:${b.color};"></div>
+            <div class="rate-card-name">${b.name}</div>
+          </div>
+          <div class="rate-card-body">
+            <div class="rate-row">
+              <div class="rate-lbl">פריים (מרווח)</div>
+              <div class="rate-val">${b.prime>=0?'+':''}${b.prime}% <span style="font-size:11px;color:var(--muted);">(${(primeRate+b.prime).toFixed(2)}%)</span></div>
+            </div>
+            <div class="rate-row">
+              <div class="rate-lbl">קל"צ — מרווח</div>
+              <div class="rate-val">${b.kalatz}%</div>
+            </div>
+            <div class="rate-row">
+              <div class="rate-lbl">ק"צ — מרווח</div>
+              <div class="rate-val">${b.katz}%</div>
+            </div>
+            <div class="rate-row">
+              <div class="rate-lbl">משתנה — מרווח</div>
+              <div class="rate-val">${b.variable}%</div>
+            </div>
+            <div class="rate-row">
+              <div class="rate-lbl">LTV מקסימלי</div>
+              <div class="rate-val">${b.maxLTV}%</div>
+            </div>
+            <div class="rate-row">
+              <div class="rate-lbl">תקופה מקסימלית</div>
+              <div class="rate-val">${b.maxTerm} שנים</div>
+            </div>
+            <div class="rate-note">${b.notes}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ─── CHART FUNCTIONS ─── */
+function calcAmortization(principal, annualRatePct, termYears) {
+  const n = termYears * 12;
+  const r = annualRatePct / 100 / 12;
+  const pmt = r > 0 ? (principal * r) / (1 - Math.pow(1 + r, -n)) : principal / n;
+  const labels = [], remaining = [], cumInterest = [];
+  let bal = principal, totalInt = 0;
+  for (let i = 1; i <= n; i++) {
+    const ip = bal * r, pp = pmt - ip;
+    bal = Math.max(0, bal - pp);
+    totalInt += ip;
+    if (i % 12 === 0) {
+      labels.push(`שנה ${i/12}`);
+      remaining.push(Math.round(bal));
+      cumInterest.push(Math.round(totalInt));
+    }
+  }
+  return { labels, remaining, cumInterest, pmt };
+}
+
+let _pieChart = null, _amorChart = null;
+
+function initPlanCharts(cl) {
+  const rp = cl.riskProfile||'medium', is = cl.incomeStability||'stable';
+  const mix = recommendPlan(rp, is);
+
+  const pieCanvas = document.getElementById('mixPieChart');
+  if (pieCanvas) {
+    if (_pieChart) _pieChart.destroy();
+    _pieChart = new Chart(pieCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: TRACKS.map(t => t.name),
+        datasets: [{ data: TRACKS.map(t => mix[t.key]), backgroundColor: TRACKS.map(t => t.color), borderWidth: 2, borderColor: '#fff' }],
+      },
+      options: {
+        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Rubik', size: 12 }, padding: 12 } } },
+        cutout: '62%',
+      },
+    });
+  }
+
+  const amorCanvas = document.getElementById('amorChart');
+  if (amorCanvas && cl.loanAmount && cl.loanTerm) {
+    if (_amorChart) _amorChart.destroy();
+    const rate = cl.currentMonthly ? null : 5.0;
+    const effectiveRate = rate || 5.0;
+    const { labels, remaining, cumInterest } = calcAmortization(cl.loanAmount, effectiveRate, cl.loanTerm);
+    _amorChart = new Chart(amorCanvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'יתרת קרן', data: remaining, borderColor: '#0F172A', backgroundColor: 'rgba(15,23,42,0.07)', fill: true, tension: 0.3, pointRadius: 0 },
+          { label: 'ריבית מצטברת', data: cumInterest, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.07)', fill: true, tension: 0.3, pointRadius: 0 },
+        ],
+      },
+      options: {
+        plugins: { legend: { labels: { font: { family: 'Rubik', size: 12 } } } },
+        scales: {
+          x: { ticks: { font: { family: 'JetBrains Mono', size: 10 }, maxTicksLimit: 8 } },
+          y: { ticks: { font: { family: 'JetBrains Mono', size: 10 }, callback: v => '₪'+Math.round(v/1000)+'K' } },
+        },
+      },
+    });
+  }
+}
+
+function updateBankPanel(bankKey) {
+  const panel = $('bankPanel');
+  if (!panel) return;
+  if (!bankKey) { panel.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">בחר בנק לצפייה בנתוני ייחוס עדכניים</div>`; return; }
+  const b = BANK_REF[bankKey];
+  if (!b) return;
+  const prime = PRIME_BASE + b.prime;
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:10px;height:10px;border-radius:50%;background:${b.color};"></div>
+      <strong style="font-size:15px;">${b.name}</strong>
+    </div>
+    <div class="bank-ref-grid">
+      <div class="bank-ref-item"><div class="bank-ref-lbl">פריים אפקטיבי</div><div class="bank-ref-val" style="color:#3B82F6;">${prime.toFixed(2)}%</div></div>
+      <div class="bank-ref-item"><div class="bank-ref-lbl">קל"צ מרווח</div><div class="bank-ref-val">${b.kalatz}%</div></div>
+      <div class="bank-ref-item"><div class="bank-ref-lbl">ק"צ מרווח</div><div class="bank-ref-val">${b.katz}%</div></div>
+      <div class="bank-ref-item"><div class="bank-ref-lbl">LTV מקסימלי</div><div class="bank-ref-val">${b.maxLTV}%</div></div>
+    </div>
+    <div class="bank-ref-note">${b.notes}</div>`;
 }
 
 /* ─── MEETINGS VIEW (all) ─── */
@@ -917,6 +1232,11 @@ function showClientModal(cl=null) {
       <div class="form-group"><label class="form-label">החזר חודשי נוכחי (₪)</label><input class="form-input" id="fc-monthly" type="number" value="${cl?.currentMonthly||''}" placeholder="6500" /></div>
       <div class="form-group"><label class="form-label">חיסכון שנוצר (₪)</label><input class="form-input" id="fc-savings" type="number" value="${cl?.totalSavings||''}" placeholder="0" /></div>
     </div>
+    <div class="section-label">תאריכים חשובים</div>
+    <div class="two-col">
+      <div class="form-group"><label class="form-label">תוקף אישור עקרוני</label><input class="form-input" id="fc-approval-exp" type="date" value="${cl?.approvalExpiry||''}" /></div>
+      <div class="form-group"><label class="form-label">תאריך יעד לסגירה</label><input class="form-input" id="fc-target-close" type="date" value="${cl?.targetClose||''}" /></div>
+    </div>
     <div class="form-group"><label class="form-label">הערות</label><textarea class="form-textarea" id="fc-notes" placeholder="הערות חופשיות...">${cl?.notes||''}</textarea></div>
     <div id="fc-err" class="alert alert-error hidden"></div>`,
     `<button class="btn btn-ghost" onclick="closeModal()">ביטול</button>
@@ -935,6 +1255,8 @@ async function submitClient(id) {
     equity: +$('fc-eq').value||0, loanTerm: +$('fc-term').value||0,
     riskProfile: $('fc-risk').value, incomeStability: $('fc-income').value,
     currentMonthly: +$('fc-monthly').value||0, totalSavings: +$('fc-savings').value||0,
+    approvalExpiry: $('fc-approval-exp').value || null,
+    targetClose: $('fc-target-close').value || null,
     notes: $('fc-notes').value.trim(),
   };
   try {
