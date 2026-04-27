@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>בוטיק משכנתאות — לוח בקרה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Rubik:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0F172A; --ink-soft: #1E293B;
+  --paper: #F5F1EA; --paper-2: #ECE5D8;
+  --line: #D8CFBE; --muted: #64748B; --muted-2: #94A3B8;
+  --amber: #F59E0B; --amber-deep: #B45309;
+  --red: #DC2626; --green: #15803D;
+  --sidebar-w: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body { font-family: 'Rubik', system-ui, sans-serif; background: var(--paper); color: var(--ink); direction: rtl; }
+
+/* ── AUTH ── */
+.auth-wrap { position: fixed; inset: 0; background: var(--ink); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.auth-card { background: #fff; padding: 48px; width: 100%; max-width: 420px; }
+.auth-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; font-weight: 700; font-size: 20px; color: var(--ink); }
+.auth-brand .mark { width: 14px; height: 14px; background: var(--amber); transform: rotate(45deg); flex-shrink: 0; }
+.auth-card h2 { font-family: 'Frank Ruhl Libre', serif; margin: 0 0 8px; font-size: 28px; font-weight: 700; }
+.auth-card .sub { color: var(--muted); font-size: 15px; margin: 0 0 32px; }
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; border: 1px solid var(--line); padding: 12px 16px;
+  font-family: 'Rubik', sans-serif; font-size: 15px; color: var(--ink);
+  background: #fff; outline: 0; transition: border-color 200ms, box-shadow 200ms;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+.form-textarea { resize: vertical; min-height: 96px; }
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 14px center; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 600; border: 0; cursor: pointer; transition: transform 140ms, background 140ms, box-shadow 140ms; text-decoration: none; white-space: nowrap; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--amber); color: var(--ink); }
+.btn-primary:hover { background: #FBBF24; box-shadow: 0 8px 24px -8px rgba(245,158,11,0.5); }
+.btn-secondary { background: var(--paper-2); color: var(--ink); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--paper-2); }
+.btn-danger { background: #FEF2F2; color: var(--red); border: 1px solid #FECACA; }
+.btn-danger:hover { background: #FEE2E2; }
+.btn-sm { padding: 7px 14px; font-size: 13px; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── SIDEBAR ── */
+.sidebar { position: fixed; top: 0; right: 0; width: var(--sidebar-w); height: 100vh; background: var(--ink); display: flex; flex-direction: column; z-index: 40; }
+.sidebar-brand { padding: 24px 20px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); color: #fff; font-weight: 700; font-size: 16px; }
+.sidebar-brand .mark { width: 12px; height: 12px; background: var(--amber); transform: rotate(45deg); flex-shrink: 0; }
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.nav-label { padding: 10px 20px 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; cursor: pointer; border-right: 3px solid transparent; transition: all 160ms; }
+.nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.nav-item.active { background: rgba(245,158,11,0.1); color: var(--amber); border-right-color: var(--amber); }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.nav-badge { margin-right: auto; background: var(--amber); color: var(--ink); font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+.sidebar-user { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.sidebar-avatar { width: 36px; height: 36px; background: var(--amber); color: var(--ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.sidebar-user-name { font-size: 14px; font-weight: 600; color: #fff; }
+.sidebar-user-email { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── LAYOUT ── */
+.app-shell { display: flex; min-height: 100vh; }
+.main-wrap { flex: 1; margin-right: var(--sidebar-w); display: flex; flex-direction: column; min-height: 100vh; }
+.page-header { position: sticky; top: 0; z-index: 30; background: rgba(245,241,234,0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.page-title { font-family: 'Frank Ruhl Libre', serif; font-size: 24px; font-weight: 700; margin: 0; }
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 2px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; cursor: pointer; }
+.breadcrumb a:hover { color: var(--amber-deep); }
+.breadcrumb .sep { color: var(--line); }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.page-body { flex: 1; padding: 28px 32px; }
+
+/* ── CARDS ── */
+.card { background: #fff; border: 1px solid var(--line); padding: 24px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.card-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+/* ── KPI GRID ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi-card { background: #fff; border: 1px solid var(--line); padding: 20px 24px; position: relative; overflow: hidden; }
+.kpi-card::before { content: ""; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--kpi-color, var(--amber)); }
+.kpi-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; line-height: 1; margin: 10px 0 4px; }
+.kpi-sub { font-size: 12px; color: var(--muted); }
+.kpi-amber { --kpi-color: var(--amber); }
+.kpi-green  { --kpi-color: var(--green); }
+.kpi-blue   { --kpi-color: #3B82F6; }
+.kpi-red    { --kpi-color: var(--red); }
+
+/* ── PIPELINE ── */
+.pipeline-bars { display: flex; gap: 3px; height: 44px; overflow: hidden; margin-bottom: 12px; }
+.pipeline-seg { display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #fff; transition: flex 600ms cubic-bezier(.2,.8,.2,1); overflow: hidden; white-space: nowrap; min-width: 0; cursor: default; }
+.pipeline-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+.pl-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+.pl-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 2px solid var(--line); }
+th { text-align: right; padding: 10px 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; white-space: nowrap; }
+th:first-child { padding-right: 0; }
+td { padding: 14px 16px; border-bottom: 1px solid var(--paper-2); vertical-align: middle; font-size: 14px; }
+td:first-child { padding-right: 0; }
+tr:hover td { background: var(--paper); }
+tr:last-child td { border-bottom: 0; }
+
+/* ── BADGES ── */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+.priority-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; white-space: nowrap; }
+.p-high   { background: #FEF2F2; color: var(--red); }
+.p-medium { background: #FEF3C7; color: var(--amber-deep); }
+.p-low    { background: #F1F5F9; color: var(--muted); }
+
+/* ── TOOLBAR ── */
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 340px; }
+.search-wrap svg { position: absolute; top: 50%; transform: translateY(-50%); right: 12px; color: var(--muted); pointer-events: none; }
+.search-input { width: 100%; border: 1px solid var(--line); padding: 10px 40px 10px 14px; font-family: 'Rubik', sans-serif; font-size: 14px; outline: 0; background: #fff; transition: border-color 200ms; }
+.search-input:focus { border-color: var(--amber); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { padding: 6px 14px; font-size: 13px; font-weight: 500; border: 1px solid var(--line); background: #fff; cursor: pointer; color: var(--muted); transition: all 140ms; }
+.chip:hover { border-color: var(--amber); color: var(--amber-deep); }
+.chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ── CLIENT HEADER ── */
+.client-hero { background: var(--ink); color: #fff; padding: 32px; margin: -28px -32px 0; }
+.client-name { font-family: 'Frank Ruhl Libre', serif; font-size: 34px; font-weight: 700; margin: 0 0 8px; }
+.client-meta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 14px; }
+.client-meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.7); }
+.client-meta-item svg { width: 15px; height: 15px; color: var(--amber); flex-shrink: 0; }
+.client-amount { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--amber); margin-top: 12px; }
+.client-amount-lbl { font-size: 11px; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+.stage-select { appearance: none; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; font-family: 'Rubik', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; outline: 0; }
+
+/* ── QUICK STATS BAR ── */
+.client-stats-bar { display: flex; border-bottom: 1px solid var(--line); margin: 0 -32px; background: #fff; }
+.cs-stat { flex: 1; padding: 18px 24px; border-left: 1px solid var(--line); }
+.cs-stat:last-child { border-left: 0; }
+.cs-stat-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.cs-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; margin-top: 6px; }
+
+/* ── TABS ── */
+.tabs { display: flex; border-bottom: 1px solid var(--line); margin: 0 -32px; padding: 0 32px; background: #fff; }
+.tab { padding: 14px 18px; font-size: 14px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 140ms; white-space: nowrap; }
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--amber-deep); border-bottom-color: var(--amber); }
+.tab-body { padding-top: 24px; }
+
+/* ── DETAIL GRID ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+.det-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; font-family: 'JetBrains Mono', monospace; }
+.det-val { font-size: 15px; color: var(--ink); font-weight: 500; }
+
+/* ── TIMELINE / MEETINGS ── */
+.timeline { position: relative; padding-right: 32px; }
+.timeline::before { content: ""; position: absolute; right: 10px; top: 8px; bottom: 8px; width: 2px; background: var(--paper-2); }
+.mtg-item { position: relative; margin-bottom: 20px; }
+.mtg-dot { position: absolute; right: -32px; top: 16px; width: 20px; height: 20px; border-radius: 50%; background: var(--amber); border: 3px solid var(--paper); display: flex; align-items: center; justify-content: center; font-size: 9px; z-index: 1; }
+.mtg-card { background: #fff; border: 1px solid var(--line); padding: 18px 20px; }
+.mtg-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.mtg-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.mtg-type-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--amber-deep); background: #FEF3C7; padding: 3px 10px; }
+.mtg-summary { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 12px; }
+.action-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+.action-row { display: flex; align-items: start; gap: 8px; font-size: 13px; margin-bottom: 5px; }
+.action-row::before { content: "←"; color: var(--amber-deep); flex-shrink: 0; }
+.next-steps { margin-top: 12px; padding: 12px; background: var(--paper); border-right: 3px solid var(--amber); font-size: 13px; line-height: 1.6; }
+
+/* ── PLAN TRACKS ── */
+.plan-track { background: #fff; border: 1px solid var(--line); padding: 18px 20px; margin-bottom: 10px; display: grid; grid-template-columns: 180px 1fr 52px; gap: 20px; align-items: center; }
+.pt-name { font-weight: 600; font-size: 15px; }
+.pt-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.pt-bar-wrap { position: relative; height: 8px; background: var(--paper-2); border-radius: 999px; }
+.pt-bar { height: 100%; border-radius: 999px; transition: width 800ms cubic-bezier(.2,.8,.2,1); }
+.pt-pct { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; text-align: left; }
+.plan-box { background: var(--ink); color: #fff; padding: 20px 24px; margin-top: 16px; }
+.plan-box h4 { font-family: 'Frank Ruhl Libre', serif; font-size: 18px; margin: 0 0 10px; }
+.plan-note { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+/* ── TASKS ── */
+.task-row { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--paper-2); }
+.task-row:last-child { border-bottom: 0; }
+.task-check { width: 20px; height: 20px; flex-shrink: 0; border: 2px solid var(--line); cursor: pointer; transition: all 140ms; display: flex; align-items: center; justify-content: center; }
+.task-check:hover { border-color: var(--amber); }
+.task-check.done { background: var(--green); border-color: var(--green); }
+.task-check.done::after { content: "✓"; color: #fff; font-size: 11px; font-weight: 700; }
+.task-title { flex: 1; font-size: 14px; }
+.task-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.task-due { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.task-due.overdue { color: var(--red); font-weight: 600; }
+.task-due.today   { color: var(--amber-deep); font-weight: 600; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(15,23,42,0.65); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 200ms; }
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal { background: #fff; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; transform: translateY(20px) scale(0.97); transition: transform 220ms cubic-bezier(.2,.8,.2,1); }
+.modal-overlay.open .modal { transform: none; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 1; }
+.modal-title { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; font-weight: 700; }
+.modal-close { width: 30px; height: 30px; border: 0; background: var(--paper-2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--muted); }
+.modal-close:hover { background: var(--line); }
+.modal-body { padding: 24px; }
+.modal-foot { padding: 14px 24px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; position: sticky; bottom: 0; background: #fff; }
+
+/* ── MISC ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 20px 0 10px; }
+.notes-box { background: var(--paper); border: 1px solid var(--line); padding: 14px 16px; font-size: 14px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; min-height: 56px; }
+.alert { padding: 12px 16px; font-size: 14px; margin-bottom: 16px; }
+.alert-error { background: #FEF2F2; color: var(--red); border: 1px solid #FECACA; }
+.hidden { display: none !important; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--amber); border-radius: 50%; animation: spin 700ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 72px 24px; color: var(--muted); }
+.empty-state .ei { font-size: 44px; margin-bottom: 14px; }
+.empty-state h3 { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; color: var(--ink); margin: 0 0 8px; }
+.empty-state p { font-size: 15px; max-width: 360px; margin: 0 auto 22px; line-height: 1.6; }
+.action-items-list { list-style: none; margin: 0; padding: 0; }
+.ai-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ai-row input { flex: 1; border: 1px solid var(--line); padding: 9px 12px; font-family: 'Rubik', sans-serif; font-size: 14px; outline: 0; }
+.ai-row input:focus { border-color: var(--amber); }
+.ai-rm { background: 0; border: 0; color: var(--red); cursor: pointer; font-size: 18px; padding: 0 4px; line-height: 1; }
+.recent-mtg { display: flex; align-items: start; gap: 13px; padding: 13px 0; border-bottom: 1px solid var(--paper-2); }
+.recent-mtg:last-child { border-bottom: 0; }
+.rm-icon { width: 34px; height: 34px; background: #FEF3C7; color: var(--amber-deep); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.rm-name { font-size: 14px; font-weight: 600; }
+.rm-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.rm-summary { font-size: 13px; color: var(--ink-soft); margin-top: 5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div class="auth-wrap" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-brand"><span class="mark"></span>בוטיק משכנתאות</div>
+    <h2 id="authHeading">כניסה לצוות</h2>
+    <p class="sub">לוח ניהול לקוחות ומעקב תהליכים</p>
+    <div id="authError" class="alert alert-error hidden"></div>
+    <div class="form-group"><label class="form-label">דואר אלקטרוני</label><input class="form-input" type="email" id="authEmail" placeholder="you@example.com" /></div>
+    <div class="form-group"><label class="form-label">סיסמה</label><input class="form-input" type="password" id="authPassword" placeholder="••••••••" /></div>
+    <button class="btn btn-primary btn-full" id="authBtn" style="margin-top:4px;">
+      <span id="authBtnLabel">כניסה</span><span id="authSpinner" class="spinner hidden"></span>
+    </button>
+    <p style="text-align:center; margin-top:14px; font-size:13px; color:var(--muted);">
+      <a id="authToggle" href="#" style="color:var(--amber-deep); text-decoration:none; font-weight:600;">אין חשבון? הרשמה</a>
+    </p>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell hidden" id="appRoot">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><span class="mark"></span>בוטיק משכנתאות</div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">ניהול</div>
+      <div class="nav-item active" data-view="dashboard" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        לוח ראשי
+      </div>
+      <div class="nav-item" data-view="clients" onclick="navigate('clients')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        לקוחות
+        <span class="nav-badge" id="navClientBadge">0</span>
+      </div>
+      <div class="nav-item" data-view="meetings" onclick="navigate('meetings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        פגישות
+      </div>
+      <div class="nav-item" data-view="tasks" onclick="navigate('tasks')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        משימות
+        <span class="nav-badge hidden" id="navTaskBadge">0</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sbAvatar">?</div>
+        <div><div class="sidebar-user-name" id="sbName">—</div><div class="sidebar-user-email" id="sbEmail">—</div></div>
+      </div>
+      <button class="btn btn-ghost btn-full btn-sm" onclick="doLogout()">יציאה</button>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <header class="page-header">
+      <div>
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <h1 class="page-title" id="pageTitle">לוח ראשי</h1>
+      </div>
+      <div class="header-actions" id="headerActions"></div>
+    </header>
+    <main class="page-body" id="viewContent"></main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">—</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script>
+'use strict';
+
+/* ─── FIREBASE ─── */
+firebase.initializeApp({
+  apiKey: "AIzaSyA91OQ-z7gYDv9MckwbB0JVqVAsnXJcU0Y",
+  authDomain: "mortgageplan-990c3.firebaseapp.com",
+  projectId: "mortgageplan-990c3",
+  storageBucket: "mortgageplan-990c3.firebasestorage.app",
+  messagingSenderId: "40711482342",
+  appId: "1:40711482342:web:71c9de9776002062b44427"
+});
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+/* ─── CONSTANTS ─── */
+const STAGES = {
+  lead:        { label: 'ליד חדש',    color: '#64748B', bg: '#F1F5F9' },
+  meeting:     { label: 'פגישה',      color: '#3B82F6', bg: '#EFF6FF' },
+  analysis:    { label: 'ניתוח',      color: '#8B5CF6', bg: '#F5F3FF' },
+  proposals:   { label: 'הצעות',      color: '#F59E0B', bg: '#FFFBEB' },
+  negotiation: { label: 'משא ומתן',   color: '#F97316', bg: '#FFF7ED' },
+  signed:      { label: 'חתם',        color: '#10B981', bg: '#ECFDF5' },
+  closed:      { label: 'הושלם',      color: '#15803D', bg: '#F0FDF4' },
+};
+const STAGE_ORDER = ['lead','meeting','analysis','proposals','negotiation','signed','closed'];
+
+const MTG_TYPES = {
+  phone:    { label: 'טלפון',    icon: '📞' },
+  zoom:     { label: 'זום',      icon: '💻' },
+  office:   { label: 'פגישה',   icon: '🏢' },
+  whatsapp: { label: 'וואטסאפ', icon: '💬' },
+};
+
+const RISK = {
+  low:    { label: 'נמוך',   color: '#15803D' },
+  medium: { label: 'בינוני', color: '#F59E0B' },
+  high:   { label: 'גבוה',   color: '#DC2626' },
+};
+
+const TRACKS = [
+  { key:'kalatz',   name:'קל"צ',   desc:'ריבית קבועה צמודת מדד',      color:'#0F172A' },
+  { key:'prime',    name:'פריים',  desc:'ריבית משתנה (פריים ± מרווח)', color:'#3B82F6' },
+  { key:'katz',     name:'ק"צ',    desc:'ריבית קבועה לא צמודה',       color:'#8B5CF6' },
+  { key:'variable', name:'משתנה', desc:'ריבית משתנה צמודת מדד',      color:'#F97316' },
+];
+
+/* ─── STATE ─── */
+const S = {
+  view: 'dashboard', clientId: null, clientTab: 'overview',
+  clients: [], meetings: [], tasks: [],
+  clientSearch: '', clientFilter: 'all',
+};
+let unsubs = [];
+
+/* ─── HELPERS ─── */
+const $  = id => document.getElementById(id);
+const fmtN = n => Math.round(n||0).toLocaleString('he-IL');
+const todayStr = () => new Date().toISOString().slice(0,10);
+const fmtDate = s => {
+  if (!s) return '—';
+  const d = new Date(s); if (isNaN(d)) return s;
+  return d.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
+};
+const isOverdue = s => s && s < todayStr() && s !== todayStr();
+const isToday   = s => s === todayStr();
+
+function stageBadge(k) {
+  const s = STAGES[k] || { label: k, color:'#64748B', bg:'#F1F5F9' };
+  return `<span class="badge" style="background:${s.bg};color:${s.color};">
+    <span class="badge-dot" style="background:${s.color};"></span>${s.label}</span>`;
+}
+function priBadge(p) {
+  const m = { high:['גבוהה','p-high'], medium:['בינונית','p-medium'], low:['נמוכה','p-low'] };
+  const [l,c] = m[p]||m.medium;
+  return `<span class="priority-badge ${c}">${l}</span>`;
+}
+function recommendPlan(rp, is) {
+  const T = {
+    low:    { stable:{kalatz:40,prime:30,katz:30,variable:0},  variable:{kalatz:50,prime:20,katz:30,variable:0}  },
+    medium: { stable:{kalatz:30,prime:40,katz:20,variable:10}, variable:{kalatz:40,prime:30,katz:20,variable:10} },
+    high:   { stable:{kalatz:20,prime:50,katz:10,variable:20}, variable:{kalatz:30,prime:40,katz:10,variable:20} },
+  };
+  return (T[rp]||T.medium)[is]||T.medium.stable;
+}
+
+/* ─── FIRESTORE CRUD ─── */
+const ts = () => firebase.firestore.FieldValue.serverTimestamp();
+
+async function saveClient(data, id=null) {
+  const p = { ...data, updatedAt: ts() };
+  if (id) { await db.collection('clients').doc(id).update(p); return id; }
+  p.createdAt = ts();
+  const r = await db.collection('clients').add(p); return r.id;
+}
+async function deleteClient(id) {
+  await db.collection('clients').doc(id).delete();
+  const ms = await db.collection('meetings').where('clientId','==',id).get();
+  ms.forEach(d => d.ref.delete());
+  const ts2 = await db.collection('tasks').where('clientId','==',id).get();
+  ts2.forEach(d => d.ref.delete());
+}
+async function saveMeeting(data, id=null) {
+  const p = { ...data, createdAt: ts() };
+  if (id) { await db.collection('meetings').doc(id).update(p); return id; }
+  const r = await db.collection('meetings').add(p);
+  if (data.clientId) await db.collection('clients').doc(data.clientId).update({ updatedAt: ts() });
+  return r.id;
+}
+async function saveTask(data, id=null) {
+  if (id) { await db.collection('tasks').doc(id).update(data); return id; }
+  data.createdAt = ts();
+  const r = await db.collection('tasks').add(data); return r.id;
+}
+async function toggleTask(id, done) { await db.collection('tasks').doc(id).update({ done: !done }); }
+async function saveProposals(clientId, arr) {
+  await db.collection('clients').doc(clientId).update({ proposals: arr, updatedAt: ts() });
+}
+
+/* ─── LISTENERS ─── */
+function initListeners() {
+  unsubs.forEach(u => u()); unsubs = [];
+  unsubs.push(
+    db.collection('clients').orderBy('updatedAt','desc').onSnapshot(snap => {
+      S.clients = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      updateBadges(); renderCurrent();
+    })
+  );
+  unsubs.push(
+    db.collection('meetings').orderBy('date','desc').onSnapshot(snap => {
+      S.meetings = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      renderCurrent();
+    })
+  );
+  unsubs.push(
+    db.collection('tasks').orderBy('dueDate','asc').onSnapshot(snap => {
+      S.tasks = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      updateBadges(); renderCurrent();
+    })
+  );
+}
+
+function updateBadges() {
+  const active = S.clients.filter(c => c.stage !== 'closed').length;
+  $('navClientBadge').textContent = active;
+  const open = S.tasks.filter(t => !t.done).length;
+  const nb = $('navTaskBadge');
+  nb.textContent = open; nb.classList.toggle('hidden', open === 0);
+}
+
+/* ─── ROUTER ─── */
+function navigate(view, clientId=null, tab='overview') {
+  S.view = view; S.clientId = clientId; S.clientTab = tab;
+  document.querySelectorAll('.nav-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.view === (view === 'client' ? 'clients' : view))
+  );
+  renderCurrent();
+}
+
+function renderCurrent() {
+  switch(S.view) {
+    case 'dashboard': renderDashboard(); break;
+    case 'clients':   renderClients();   break;
+    case 'client':    renderClient();    break;
+    case 'meetings':  renderMeetings();  break;
+    case 'tasks':     renderTasks();     break;
+  }
+}
+
+/* ─── DASHBOARD ─── */
+function renderDashboard() {
+  $('pageTitle').textContent = 'לוח ראשי';
+  $('breadcrumb').innerHTML = '';
+  $('headerActions').innerHTML = `<button class="btn btn-primary" onclick="showClientModal()">+ לקוח חדש</button>`;
+
+  const active = S.clients.filter(c => c.stage !== 'closed');
+  const w0 = new Date(); w0.setDate(w0.getDate() - w0.getDay());
+  const w1 = new Date(w0); w1.setDate(w0.getDate() + 6);
+  const wS = w0.toISOString().slice(0,10), wE = w1.toISOString().slice(0,10);
+  const weekMtgs = S.meetings.filter(m => m.date >= wS && m.date <= wE);
+  const savings = S.clients.reduce((a,c) => a + (c.totalSavings||0), 0);
+  const pipeline = active.reduce((a,c) => a + (c.loanAmount||0), 0);
+
+  const counts = {}; STAGE_ORDER.forEach(s => counts[s] = 0);
+  S.clients.forEach(c => { if (counts[c.stage] !== undefined) counts[c.stage]++; });
+  const total = Math.max(Object.values(counts).reduce((a,b)=>a+b,0), 1);
+
+  const openTasks  = S.tasks.filter(t => !t.done).slice(0,6);
+  const recentMtgs = S.meetings.slice(0,5);
+
+  $('viewContent').innerHTML = `
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-amber"><div class="kpi-label">לקוחות פעילים</div><div class="kpi-value">${active.length}</div><div class="kpi-sub">מתוך ${S.clients.length} סה"כ</div></div>
+      <div class="kpi-card kpi-blue"><div class="kpi-label">פגישות השבוע</div><div class="kpi-value">${weekMtgs.length}</div><div class="kpi-sub">שתועדו</div></div>
+      <div class="kpi-card kpi-green"><div class="kpi-label">חיסכון שנוצר</div><div class="kpi-value">₪${fmtN(savings)}</div><div class="kpi-sub">מצטבר ללקוחות</div></div>
+      <div class="kpi-card kpi-red"><div class="kpi-label">שווי צינור</div><div class="kpi-value">₪${fmtN(pipeline)}</div><div class="kpi-sub">הלוואות פעילות</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">צינור לקוחות</div><span style="font-size:12px;color:var(--muted);">${S.clients.length} לקוחות</span></div>
+      <div class="pipeline-bars">
+        ${S.clients.length === 0
+          ? `<div class="pipeline-seg" style="flex:1;background:var(--paper-2);color:var(--muted);">הוסף לקוח ראשון</div>`
+          : STAGE_ORDER.map(s => counts[s] ? `<div class="pipeline-seg" style="flex:${counts[s]};background:${STAGES[s].color};" title="${STAGES[s].label}: ${counts[s]}">${counts[s]}</div>` : '').join('')}
+      </div>
+      <div class="pipeline-legend">
+        ${STAGE_ORDER.map(s => `<div class="pl-item"><span class="pl-dot" style="background:${STAGES[s].color};"></span>${STAGES[s].label} <strong style="color:var(--ink);margin-right:4px;">${counts[s]}</strong></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><div class="card-title">פגישות אחרונות</div><button class="btn btn-ghost btn-sm" onclick="navigate('meetings')">הכל</button></div>
+        ${recentMtgs.length === 0
+          ? `<div style="text-align:center;padding:28px;color:var(--muted);font-size:14px;">לא תועדו פגישות עדיין</div>`
+          : recentMtgs.map(m => {
+              const cl = S.clients.find(c=>c.id===m.clientId);
+              const mt = MTG_TYPES[m.type]||MTG_TYPES.phone;
+              return `<div class="recent-mtg">
+                <div class="rm-icon">${mt.icon}</div>
+                <div style="flex:1;min-width:0;">
+                  <div class="rm-name">${cl?.name||'—'}</div>
+                  <div class="rm-meta">${mt.label} · ${fmtDate(m.date)}</div>
+                  ${m.summary?`<div class="rm-summary">${m.summary}</div>`:''}
+                </div>
+                ${cl?`<button class="btn btn-ghost btn-sm" onclick="navigate('client','${cl.id}','meetings')">צפה</button>`:''}
+              </div>`;
+            }).join('')}
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">משימות פתוחות</div><button class="btn btn-ghost btn-sm" onclick="navigate('tasks')">הכל</button></div>
+        ${openTasks.length === 0
+          ? `<div style="text-align:center;padding:28px;color:var(--muted);font-size:14px;">אין משימות פתוחות 🎉</div>`
+          : openTasks.map(t => `
+            <div class="task-row">
+              <div class="task-check${t.done?' done':''}" onclick="toggleTask('${t.id}',${t.done})"></div>
+              <div style="flex:1;min-width:0;"><div class="task-title">${t.title}</div><div class="task-sub">${t.clientName||''}</div></div>
+              ${priBadge(t.priority)}
+              <div class="task-due${isOverdue(t.dueDate)?' overdue':isToday(t.dueDate)?' today':''}">${t.dueDate?fmtDate(t.dueDate):''}</div>
+            </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ─── CLIENTS LIST ─── */
+function renderClients() {
+  $('pageTitle').textContent = 'לקוחות';
+  $('breadcrumb').innerHTML = '';
+  $('headerActions').innerHTML = `<button class="btn btn-primary" onclick="showClientModal()">+ לקוח חדש</button>`;
+
+  let list = S.clients;
+  if (S.clientFilter !== 'all') list = list.filter(c => c.stage === S.clientFilter);
+  if (S.clientSearch) {
+    const q = S.clientSearch.toLowerCase();
+    list = list.filter(c => (c.name||'').toLowerCase().includes(q) || (c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q));
+  }
+
+  $('viewContent').innerHTML = `
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="search-input" type="search" placeholder="חיפוש שם, טלפון, מייל..." value="${S.clientSearch}" oninput="S.clientSearch=this.value;renderClients()" />
+      </div>
+      <div class="chips">
+        <div class="chip${S.clientFilter==='all'?' active':''}" onclick="S.clientFilter='all';renderClients()">הכל (${S.clients.length})</div>
+        ${STAGE_ORDER.map(s => {
+          const n = S.clients.filter(c=>c.stage===s).length;
+          return `<div class="chip${S.clientFilter===s?' active':''}" onclick="S.clientFilter='${s}';renderClients()">${STAGES[s].label} (${n})</div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${list.length === 0
+      ? `<div class="empty-state"><div class="ei">👥</div><h3>${S.clients.length===0?'עדיין אין לקוחות':'לא נמצאו תוצאות'}</h3><p>${S.clients.length===0?'הוסיפו את הלקוח הראשון.':'נסו לשנות את החיפוש.'}</p>${S.clients.length===0?`<button class="btn btn-primary" onclick="showClientModal()">+ לקוח חדש</button>`:''}</div>`
+      : `<div class="card" style="padding:0;"><div class="table-wrap"><table>
+          <thead><tr><th>שם</th><th>טלפון</th><th>סכום הלוואה</th><th>שלב</th><th>פגישה אחרונה</th><th>משימות</th><th></th></tr></thead>
+          <tbody>
+            ${list.map(c => {
+              const lm = S.meetings.find(m=>m.clientId===c.id);
+              const ct = S.tasks.filter(t=>t.clientId===c.id&&!t.done).length;
+              return `<tr onclick="navigate('client','${c.id}')" style="cursor:pointer;">
+                <td><strong>${c.name||'—'}</strong>${c.email?`<div style="font-size:12px;color:var(--muted);">${c.email}</div>`:''}</td>
+                <td class="mono" style="font-size:14px;">${c.phone||'—'}</td>
+                <td class="mono">${c.loanAmount?'₪'+fmtN(c.loanAmount):'—'}</td>
+                <td>${stageBadge(c.stage)}</td>
+                <td style="font-size:13px;color:var(--muted);">${lm?fmtDate(lm.date):'—'}</td>
+                <td>${ct>0?`<span class="priority-badge p-high">${ct}</span>`:'<span style="color:var(--muted)">—</span>'}</td>
+                <td onclick="event.stopPropagation()" style="white-space:nowrap;">
+                  <button class="btn btn-ghost btn-sm" onclick="showClientModal(${JSON.stringify(c).replace(/"/g,'&quot;')})">עריכה</button>
+                </td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table></div></div>`}`;
+}
+
+/* ─── CLIENT DETAIL ─── */
+function renderClient() {
+  const cl = S.clients.find(c => c.id === S.clientId);
+  if (!cl) { navigate('clients'); return; }
+
+  const cms = S.meetings.filter(m => m.clientId === cl.id);
+  const cts = S.tasks.filter(t => t.clientId === cl.id);
+
+  $('pageTitle').textContent = cl.name;
+  $('breadcrumb').innerHTML = `<a onclick="navigate('clients')">לקוחות</a><span class="sep">/</span>${cl.name}`;
+  $('headerActions').innerHTML = `
+    <button class="btn btn-ghost btn-sm" onclick="showMeetingModal('${cl.id}')">+ פגישה</button>
+    <button class="btn btn-ghost btn-sm" onclick="showTaskModal('${cl.id}','${cl.name.replace(/'/g,"\\'")}')">+ משימה</button>
+    <button class="btn btn-primary btn-sm" onclick="showClientModal(${JSON.stringify(cl).replace(/"/g,'&quot;')})">עריכה</button>`;
+
+  const tab = S.clientTab;
+  $('viewContent').innerHTML = `
+    <div class="client-hero">
+      <div style="display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <h2 class="client-name">${cl.name}</h2>
+            <select class="stage-select" onchange="saveClient({stage:this.value},'${cl.id}')">
+              ${STAGE_ORDER.map(s=>`<option value="${s}"${cl.stage===s?' selected':''}>${STAGES[s].label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="client-meta-row">
+            ${cl.phone?`<div class="client-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.1 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>${cl.phone}</div>`:''}
+            ${cl.email?`<div class="client-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${cl.email}</div>`:''}
+            ${cl.riskProfile?`<div class="client-meta-item" style="color:${RISK[cl.riskProfile]?.color||'#fff'};">● סיכון ${RISK[cl.riskProfile]?.label||cl.riskProfile}</div>`:''}
+          </div>
+          ${cl.loanAmount?`<div class="client-amount">₪${fmtN(cl.loanAmount)}</div><div class="client-amount-lbl">סכום הלוואה</div>`:''}
+        </div>
+      </div>
+    </div>
+
+    <div class="client-stats-bar">
+      <div class="cs-stat"><div class="cs-stat-lbl">פגישות</div><div class="cs-stat-val">${cms.length}</div></div>
+      <div class="cs-stat"><div class="cs-stat-lbl">משימות פתוחות</div><div class="cs-stat-val">${cts.filter(t=>!t.done).length}</div></div>
+      <div class="cs-stat"><div class="cs-stat-lbl">חיסכון שנוצר</div><div class="cs-stat-val mono" style="color:var(--green);">${cl.totalSavings?'₪'+fmtN(cl.totalSavings):'—'}</div></div>
+      <div class="cs-stat"><div class="cs-stat-lbl">תקופת הלוואה</div><div class="cs-stat-val">${cl.loanTerm?cl.loanTerm+' שנ׳':'—'}</div></div>
+    </div>
+
+    <div class="tabs">
+      ${[['overview','סקירה'],['meetings',`פגישות${cms.length?' ('+cms.length+')':''}`],['plan','תוכנית'],['tasks',`משימות${cts.filter(t=>!t.done).length?' ●':''}`]].map(([k,l])=>
+        `<div class="tab${tab===k?' active':''}" onclick="S.clientTab='${k}';renderClient()">${l}</div>`
+      ).join('')}
+    </div>
+
+    <div class="tab-body">
+      ${tab==='overview' ? tabOverview(cl) : ''}
+      ${tab==='meetings' ? tabMeetings(cl,cms) : ''}
+      ${tab==='plan'     ? tabPlan(cl) : ''}
+      ${tab==='tasks'    ? tabTasks(cl,cts) : ''}
+    </div>`;
+}
+
+function tabOverview(cl) {
+  return `<div class="two-col">
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><div class="card-title">פרטי קשר</div></div>
+        <div class="detail-grid">
+          <div><div class="det-lbl">שם מלא</div><div class="det-val">${cl.name||'—'}</div></div>
+          <div><div class="det-lbl">טלפון</div><div class="det-val mono">${cl.phone||'—'}</div></div>
+          <div><div class="det-lbl">דואר אלקטרוני</div><div class="det-val">${cl.email||'—'}</div></div>
+          <div><div class="det-lbl">תאריך הצטרפות</div><div class="det-val">${cl.createdAt?.toDate?fmtDate(cl.createdAt.toDate().toISOString().slice(0,10)):'—'}</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">הערות</div></div>
+        ${cl.notes?`<div class="notes-box">${cl.notes}</div>`:`<div style="color:var(--muted);font-size:14px;">אין הערות עדיין.</div>`}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">פרטי המשכנתא</div></div>
+      <div class="detail-grid">
+        <div><div class="det-lbl">סכום הלוואה</div><div class="det-val mono">${cl.loanAmount?'₪'+fmtN(cl.loanAmount):'—'}</div></div>
+        <div><div class="det-lbl">שווי נכס</div><div class="det-val mono">${cl.propertyValue?'₪'+fmtN(cl.propertyValue):'—'}</div></div>
+        <div><div class="det-lbl">הון עצמי</div><div class="det-val mono">${cl.equity?'₪'+fmtN(cl.equity):'—'}</div></div>
+        <div><div class="det-lbl">תקופה</div><div class="det-val">${cl.loanTerm?cl.loanTerm+' שנים':'—'}</div></div>
+        <div><div class="det-lbl">פרופיל סיכון</div><div class="det-val" style="color:${RISK[cl.riskProfile]?.color||'inherit'};font-weight:600;">${RISK[cl.riskProfile]?.label||'—'}</div></div>
+        <div><div class="det-lbl">יציבות הכנסה</div><div class="det-val">${cl.incomeStability==='stable'?'יציבה':cl.incomeStability==='variable'?'משתנה':'—'}</div></div>
+        <div><div class="det-lbl">החזר חודשי נוכחי</div><div class="det-val mono">${cl.currentMonthly?'₪'+fmtN(cl.currentMonthly)+'/ח':'—'}</div></div>
+        <div><div class="det-lbl">חיסכון שנוצר</div><div class="det-val mono" style="color:var(--green);font-weight:700;">${cl.totalSavings?'₪'+fmtN(cl.totalSavings):'—'}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function tabMeetings(cl, cms) {
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div style="font-size:14px;color:var(--muted);">${cms.length} פגישות מתועדות</div>
+    <button class="btn btn-primary btn-sm" onclick="showMeetingModal('${cl.id}')">+ תעד פגישה</button>
+  </div>
+  ${cms.length===0
+    ? `<div class="empty-state"><div class="ei">📅</div><h3>אין פגישות מתועדות</h3><p>תעדו את הפגישה הראשונה עם ${cl.name}.</p><button class="btn btn-primary" onclick="showMeetingModal('${cl.id}')">תעד פגישה</button></div>`
+    : `<div class="timeline">${cms.map(m=>{
+        const mt = MTG_TYPES[m.type]||MTG_TYPES.phone;
+        const acts = Array.isArray(m.actionItems)?m.actionItems.filter(Boolean):[];
+        return `<div class="mtg-item">
+          <div class="mtg-dot">${mt.icon}</div>
+          <div class="mtg-card">
+            <div class="mtg-head">
+              <div>
+                <span class="mtg-type-badge">${mt.label}</span>
+                <div class="mtg-date">${fmtDate(m.date)}${m.duration?' · '+m.duration+' דקות':''}</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="delMeeting('${m.id}')">מחק</button>
+            </div>
+            ${m.summary?`<div class="mtg-summary">${m.summary}</div>`:''}
+            ${acts.length?`<div class="action-lbl">פעולות נדרשות</div>${acts.map(a=>`<div class="action-row">${a}</div>`).join('')}`:''}
+            ${m.nextSteps?`<div class="next-steps"><strong>צעדים הבאים:</strong> ${m.nextSteps}</div>`:''}
+          </div>
+        </div>`;
+      }).join('')}</div>`}`;
+}
+
+function tabPlan(cl) {
+  const rp = cl.riskProfile||'medium', is = cl.incomeStability||'stable';
+  const mix = recommendPlan(rp, is);
+  const props = cl.proposals||[];
+  const bestRate = props.length ? Math.min(...props.map(p=>p.rate)) : null;
+
+  return `<div class="two-col">
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <div class="card-title">תמהיל מומלץ</div>
+          <span style="font-size:12px;color:var(--muted);">סיכון ${RISK[rp]?.label||rp} · הכנסה ${is==='stable'?'יציבה':'משתנה'}</span>
+        </div>
+        ${TRACKS.map(t=>`
+          <div class="plan-track">
+            <div><div class="pt-name" style="color:${t.color};">${t.name}</div><div class="pt-desc">${t.desc}</div></div>
+            <div class="pt-bar-wrap"><div class="pt-bar" style="width:${mix[t.key]}%;background:${t.color};"></div></div>
+            <div class="pt-pct" style="color:${t.color};">${mix[t.key]}%</div>
+          </div>`).join('')}
+        <div class="plan-box">
+          <h4>פרשנות</h4>
+          <p class="plan-note">${
+            rp==='low'?'תמהיל שמרני עם דגש על יציבות — עיקר ההלוואה בריבית קבועה כדי להגן מפני תנודות.':
+            rp==='high'?'תמהיל אגרסיבי — ניצול ריבית הפריים בתקופות נמוכות, עם גמישות מרבית למחזור.':
+            'תמהיל מאוזן — שילוב ריבית קבועה ופריים לאיזון יציבות מול גמישות.'
+          }${is==='variable'?' ההמלצה מותאמת להכנסה משתנה — שיעור גבוה יותר של מסלולים קבועים.':''}</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">הצעות בנקים</div>
+          <button class="btn btn-primary btn-sm" onclick="showProposalModal('${cl.id}',${JSON.stringify(props).replace(/"/g,'&quot;')})">+ הצעה</button>
+        </div>
+        ${props.length===0
+          ? `<div style="text-align:center;padding:28px;color:var(--muted);font-size:14px;">לא הוזנו הצעות עדיין</div>`
+          : `<div class="table-wrap"><table>
+              <thead><tr><th>בנק</th><th style="text-align:center;">ריבית</th><th style="text-align:center;">החזר חודשי</th><th></th></tr></thead>
+              <tbody>
+                ${props.map((p,i)=>{
+                  const best = p.rate===bestRate;
+                  return `<tr>
+                    <td><strong>${p.bank}</strong>${best?` <span style="color:var(--green);font-size:12px;font-weight:700;">✓ הטובה</span>`:''}}</td>
+                    <td class="mono" style="text-align:center;color:${best?'var(--green)':'inherit'};font-weight:${best?700:400};">${p.rate}%</td>
+                    <td class="mono" style="text-align:center;">${p.monthly?'₪'+fmtN(p.monthly):'—'}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="rmProposal('${cl.id}',${i})">✕</button></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table></div>
+            ${props.length>1?`<div style="margin-top:14px;padding:12px 16px;background:#ECFDF5;color:var(--green);font-size:13px;font-weight:600;">
+              הפרש בין הצעות: <span class="mono">${(Math.max(...props.map(p=>p.rate))-bestRate).toFixed(2)}%</span> ריבית
+            </div>`:''}`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function tabTasks(cl, cts) {
+  const open = cts.filter(t=>!t.done), done = cts.filter(t=>t.done);
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div style="font-size:14px;color:var(--muted);">${open.length} פתוחות · ${done.length} הושלמו</div>
+    <button class="btn btn-primary btn-sm" onclick="showTaskModal('${cl.id}','${cl.name.replace(/'/g,"\\'")}')">+ משימה</button>
+  </div>
+  ${cts.length===0
+    ? `<div class="empty-state"><div class="ei">✅</div><h3>אין משימות</h3><p>הוסיפו משימה מעקב ללקוח זה.</p></div>`
+    : `<div class="card">
+        ${open.map(t=>taskRow(t)).join('')}
+        ${done.length?`<div class="section-label" style="margin-top:20px;">הושלמו</div><div style="opacity:0.5;">${done.map(t=>taskRow(t)).join('')}</div>`:''}
+      </div>`}`;
+}
+
+function taskRow(t) {
+  return `<div class="task-row">
+    <div class="task-check${t.done?' done':''}" onclick="toggleTask('${t.id}',${t.done})"></div>
+    <div style="flex:1;"><div class="task-title" style="${t.done?'text-decoration:line-through;color:var(--muted);':''}">${t.title}</div></div>
+    ${priBadge(t.priority)}
+    <div class="task-due${isOverdue(t.dueDate)&&!t.done?' overdue':isToday(t.dueDate)&&!t.done?' today':''}">${t.dueDate?fmtDate(t.dueDate):''}</div>
+  </div>`;
+}
+
+/* ─── MEETINGS VIEW (all) ─── */
+function renderMeetings() {
+  $('pageTitle').textContent = 'פגישות';
+  $('breadcrumb').innerHTML = '';
+  $('headerActions').innerHTML = '';
+  const sorted = [...S.meetings];
+  $('viewContent').innerHTML = sorted.length===0
+    ? `<div class="empty-state"><div class="ei">📅</div><h3>אין פגישות מתועדות</h3><p>פגישות מתווספות מתוך כרטיס הלקוח.</p></div>`
+    : `<div class="card" style="padding:0;"><div class="table-wrap"><table>
+        <thead><tr><th>לקוח</th><th>סוג</th><th>תאריך</th><th>סיכום</th><th></th></tr></thead>
+        <tbody>${sorted.map(m=>{
+          const cl = S.clients.find(c=>c.id===m.clientId);
+          const mt = MTG_TYPES[m.type]||MTG_TYPES.phone;
+          return `<tr>
+            <td><strong>${cl?.name||'—'}</strong></td>
+            <td>${mt.icon} ${mt.label}</td>
+            <td class="mono" style="font-size:13px;">${fmtDate(m.date)}</td>
+            <td style="max-width:280px;font-size:13px;color:var(--muted);">${(m.summary||'').slice(0,90)}${(m.summary?.length||0)>90?'...':''}</td>
+            <td>${cl?`<button class="btn btn-ghost btn-sm" onclick="navigate('client','${cl.id}','meetings')">פתח</button>`:''}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div></div>`;
+}
+
+/* ─── TASKS VIEW ─── */
+function renderTasks() {
+  $('pageTitle').textContent = 'משימות';
+  $('breadcrumb').innerHTML = '';
+  $('headerActions').innerHTML = `<button class="btn btn-primary" onclick="showTaskModal()">+ משימה חדשה</button>`;
+
+  const open     = S.tasks.filter(t=>!t.done);
+  const overdue  = open.filter(t=>isOverdue(t.dueDate));
+  const todayT   = open.filter(t=>isToday(t.dueDate));
+  const upcoming = open.filter(t=>!isOverdue(t.dueDate)&&!isToday(t.dueDate));
+  const done     = S.tasks.filter(t=>t.done).slice(0,15);
+
+  const grp = (title, items, color='') => items.length ? `
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-header"><div class="card-title" style="${color?`color:${color}`:''}">${title} (${items.length})</div></div>
+      ${items.map(t=>`<div class="task-row">
+        <div class="task-check${t.done?' done':''}" onclick="toggleTask('${t.id}',${t.done})"></div>
+        <div style="flex:1;"><div class="task-title" style="${t.done?'text-decoration:line-through;color:var(--muted);':''}">${t.title}</div>${t.clientName?`<div class="task-sub">${t.clientName}</div>`:''}</div>
+        ${priBadge(t.priority)}
+        <div class="task-due${isOverdue(t.dueDate)&&!t.done?' overdue':isToday(t.dueDate)&&!t.done?' today':''}">${t.dueDate?fmtDate(t.dueDate):''}</div>
+      </div>`).join('')}
+    </div>` : '';
+
+  $('viewContent').innerHTML = S.tasks.length===0
+    ? `<div class="empty-state"><div class="ei">✅</div><h3>אין משימות עדיין</h3><p>צרו משימות מעקב ללקוחות.</p><button class="btn btn-primary" onclick="showTaskModal()">+ משימה ראשונה</button></div>`
+    : grp('באיחור',overdue,'var(--red)')+grp('היום',todayT,'var(--amber-deep)')+grp('קרובות',upcoming)+grp('הושלמו',done);
+}
+
+/* ─── MODALS ─── */
+function openModal(title, body, foot) {
+  $('modalTitle').textContent = title;
+  $('modalBody').innerHTML = body;
+  $('modalFoot').innerHTML = foot;
+  $('modalOverlay').classList.add('open');
+}
+function closeModal() { $('modalOverlay').classList.remove('open'); }
+
+/* CLIENT MODAL */
+function showClientModal(cl=null) {
+  const ie = !!cl;
+  openModal(ie?'עריכת לקוח':'לקוח חדש', `
+    <div class="two-col">
+      <div class="form-group"><label class="form-label">שם מלא *</label><input class="form-input" id="fc-name" value="${cl?.name||''}" placeholder="ישראל ישראלי" /></div>
+      <div class="form-group"><label class="form-label">טלפון</label><input class="form-input" id="fc-phone" value="${cl?.phone||''}" placeholder="050-0000000" /></div>
+      <div class="form-group"><label class="form-label">דואר אלקטרוני</label><input class="form-input" id="fc-email" value="${cl?.email||''}" type="email" /></div>
+      <div class="form-group"><label class="form-label">שלב בתהליך</label>
+        <select class="form-select" id="fc-stage">
+          ${STAGE_ORDER.map(s=>`<option value="${s}"${(cl?.stage||'lead')===s?' selected':''}>${STAGES[s].label}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="section-label">פרטי משכנתא</div>
+    <div class="two-col">
+      <div class="form-group"><label class="form-label">סכום הלוואה (₪)</label><input class="form-input" id="fc-loan" type="number" value="${cl?.loanAmount||''}" placeholder="1800000" /></div>
+      <div class="form-group"><label class="form-label">שווי נכס (₪)</label><input class="form-input" id="fc-prop" type="number" value="${cl?.propertyValue||''}" placeholder="2500000" /></div>
+      <div class="form-group"><label class="form-label">הון עצמי (₪)</label><input class="form-input" id="fc-eq" type="number" value="${cl?.equity||''}" placeholder="600000" /></div>
+      <div class="form-group"><label class="form-label">תקופה (שנים)</label><input class="form-input" id="fc-term" type="number" value="${cl?.loanTerm||''}" placeholder="25" /></div>
+      <div class="form-group"><label class="form-label">פרופיל סיכון</label>
+        <select class="form-select" id="fc-risk">
+          <option value="">—</option>
+          ${Object.entries(RISK).map(([k,v])=>`<option value="${k}"${cl?.riskProfile===k?' selected':''}>${v.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">יציבות הכנסה</label>
+        <select class="form-select" id="fc-income">
+          <option value="stable"${(cl?.incomeStability||'stable')==='stable'?' selected':''}>יציבה</option>
+          <option value="variable"${cl?.incomeStability==='variable'?' selected':''}>משתנה</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">החזר חודשי נוכחי (₪)</label><input class="form-input" id="fc-monthly" type="number" value="${cl?.currentMonthly||''}" placeholder="6500" /></div>
+      <div class="form-group"><label class="form-label">חיסכון שנוצר (₪)</label><input class="form-input" id="fc-savings" type="number" value="${cl?.totalSavings||''}" placeholder="0" /></div>
+    </div>
+    <div class="form-group"><label class="form-label">הערות</label><textarea class="form-textarea" id="fc-notes" placeholder="הערות חופשיות...">${cl?.notes||''}</textarea></div>
+    <div id="fc-err" class="alert alert-error hidden"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">ביטול</button>
+     ${ie?`<button class="btn btn-danger btn-sm" onclick="confirmDel('${cl.id}')">מחיקה</button>`:''}
+     <button class="btn btn-primary" onclick="submitClient(${ie?`'${cl.id}'`:'null'})">שמירה</button>`
+  );
+}
+
+async function submitClient(id) {
+  const name = $('fc-name').value.trim();
+  if (!name) { showErr('fc-err','שם הלקוח הוא שדה חובה.'); return; }
+  const data = {
+    name, phone: $('fc-phone').value.trim(), email: $('fc-email').value.trim(),
+    stage: $('fc-stage').value,
+    loanAmount: +$('fc-loan').value||0, propertyValue: +$('fc-prop').value||0,
+    equity: +$('fc-eq').value||0, loanTerm: +$('fc-term').value||0,
+    riskProfile: $('fc-risk').value, incomeStability: $('fc-income').value,
+    currentMonthly: +$('fc-monthly').value||0, totalSavings: +$('fc-savings').value||0,
+    notes: $('fc-notes').value.trim(),
+  };
+  try {
+    const sid = await saveClient(data, id);
+    closeModal();
+    if (!id) navigate('client', sid);
+  } catch(e) { showErr('fc-err', 'שגיאה: '+e.message); }
+}
+
+function confirmDel(id) {
+  if (confirm('למחוק לקוח זה? הפגישות והמשימות שלו יימחקו גם כן.'))
+    deleteClient(id).then(()=>{ closeModal(); navigate('clients'); });
+}
+
+/* MEETING MODAL */
+function showMeetingModal(clientId) {
+  openModal('תיעוד פגישה', `
+    <div class="two-col">
+      <div class="form-group"><label class="form-label">תאריך *</label><input class="form-input" id="fm-date" type="date" value="${todayStr()}" /></div>
+      <div class="form-group"><label class="form-label">סוג</label>
+        <select class="form-select" id="fm-type">
+          ${Object.entries(MTG_TYPES).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">משך (דקות)</label><input class="form-input" id="fm-dur" type="number" placeholder="45" /></div>
+    </div>
+    <div class="form-group"><label class="form-label">סיכום הפגישה</label><textarea class="form-textarea" id="fm-sum" placeholder="תארו את עיקרי הפגישה..." rows="4"></textarea></div>
+    <div class="form-group">
+      <label class="form-label">פעולות נדרשות</label>
+      <ul class="action-items-list" id="aiList">
+        <li class="ai-row"><input placeholder="לדוגמה: לשלוח תדפיס הלוואה" /><button class="ai-rm" onclick="this.parentElement.remove()">×</button></li>
+      </ul>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addAI()">+ הוסף פעולה</button>
+    </div>
+    <div class="form-group"><label class="form-label">צעדים הבאים</label><input class="form-input" id="fm-next" placeholder="לדוגמה: פגישה עם הבנק ב-15.5" /></div>
+    <div id="fm-err" class="alert alert-error hidden"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">ביטול</button>
+     <button class="btn btn-primary" onclick="submitMeeting('${clientId}')">שמירה</button>`
+  );
+}
+
+function addAI() {
+  const li = document.createElement('li'); li.className = 'ai-row';
+  li.innerHTML = `<input placeholder="פעולה נדרשת..." /><button class="ai-rm" onclick="this.parentElement.remove()">×</button>`;
+  $('aiList').appendChild(li);
+}
+
+async function submitMeeting(cid) {
+  const date = $('fm-date').value;
+  if (!date) { showErr('fm-err','נא לבחור תאריך'); return; }
+  const acts = [...document.querySelectorAll('#aiList input')].map(i=>i.value.trim()).filter(Boolean);
+  const data = {
+    clientId: cid,
+    clientName: S.clients.find(c=>c.id===cid)?.name||'',
+    date, type: $('fm-type').value,
+    duration: +$('fm-dur').value||0,
+    summary: $('fm-sum').value.trim(),
+    actionItems: acts,
+    nextSteps: $('fm-next').value.trim(),
+  };
+  try { await saveMeeting(data); closeModal(); S.clientTab='meetings'; renderCurrent(); }
+  catch(e) { showErr('fm-err','שגיאה: '+e.message); }
+}
+
+async function delMeeting(id) {
+  if (confirm('למחוק פגישה זו?')) await db.collection('meetings').doc(id).delete();
+}
+
+/* TASK MODAL */
+function showTaskModal(cid=null, cname='') {
+  openModal('משימה חדשה', `
+    <div class="form-group"><label class="form-label">תיאור המשימה *</label><input class="form-input" id="ft-title" placeholder="לדוגמה: לשלוח הצעה לבנק הפועלים" /></div>
+    <div class="two-col">
+      <div class="form-group"><label class="form-label">תאריך יעד</label><input class="form-input" id="ft-due" type="date" value="${todayStr()}" /></div>
+      <div class="form-group"><label class="form-label">עדיפות</label>
+        <select class="form-select" id="ft-pri">
+          <option value="high">גבוהה</option>
+          <option value="medium" selected>בינונית</option>
+          <option value="low">נמוכה</option>
+        </select>
+      </div>
+    </div>
+    ${!cid?`<div class="form-group"><label class="form-label">לקוח (אופציונלי)</label>
+      <select class="form-select" id="ft-client">
+        <option value="">—</option>
+        ${S.clients.map(c=>`<option value="${c.id}|||${c.name}">${c.name}</option>`).join('')}
+      </select>
+    </div>`:`<input type="hidden" id="ft-client" value="${cid}|||${cname}" />`}
+    <div id="ft-err" class="alert alert-error hidden"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">ביטול</button>
+     <button class="btn btn-primary" onclick="submitTask()">שמירה</button>`
+  );
+}
+
+async function submitTask() {
+  const title = $('ft-title').value.trim();
+  if (!title) { showErr('ft-err','נא למלא תיאור'); return; }
+  const cv = $('ft-client').value;
+  const [cid, cname] = cv ? cv.split('|||') : ['',''];
+  const data = { title, dueDate: $('ft-due').value, priority: $('ft-pri').value, clientId: cid, clientName: cname, done: false };
+  try { await saveTask(data); closeModal(); }
+  catch(e) { showErr('ft-err','שגיאה: '+e.message); }
+}
+
+/* PROPOSAL MODAL */
+function showProposalModal(cid, existing) {
+  openModal('הוסף הצעת בנק', `
+    <div class="three-col">
+      <div class="form-group"><label class="form-label">שם הבנק *</label><input class="form-input" id="fp-bank" placeholder="בנק הפועלים" /></div>
+      <div class="form-group"><label class="form-label">ריבית (%)</label><input class="form-input" id="fp-rate" type="number" step="0.01" placeholder="4.85" /></div>
+      <div class="form-group"><label class="form-label">החזר חודשי (₪)</label><input class="form-input" id="fp-mon" type="number" placeholder="8500" /></div>
+    </div>
+    <div id="fp-err" class="alert alert-error hidden"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">ביטול</button>
+     <button class="btn btn-primary" onclick="submitProposal('${cid}',${JSON.stringify(existing).replace(/"/g,'&quot;')})">הוסף</button>`
+  );
+}
+
+async function submitProposal(cid, ex) {
+  const bank = $('fp-bank').value.trim();
+  if (!bank) { showErr('fp-err','נא לציין שם בנק'); return; }
+  const np = { bank, rate: +$('fp-rate').value||0, monthly: +$('fp-mon').value||0 };
+  try { await saveProposals(cid, [...ex, np]); closeModal(); }
+  catch(e) { showErr('fp-err','שגיאה: '+e.message); }
+}
+
+async function rmProposal(cid, idx) {
+  const cl = S.clients.find(c=>c.id===cid);
+  if (!cl?.proposals) return;
+  await saveProposals(cid, cl.proposals.filter((_,i)=>i!==idx));
+}
+
+function showErr(id, msg) { const el=$(id); el.textContent=msg; el.classList.remove('hidden'); }
+
+/* ─── AUTH ─── */
+let authMode = 'login';
+$('authToggle').addEventListener('click', e => {
+  e.preventDefault();
+  authMode = authMode==='login'?'register':'login';
+  $('authHeading').textContent  = authMode==='login'?'כניסה לצוות':'יצירת חשבון';
+  $('authBtnLabel').textContent = authMode==='login'?'כניסה':'הרשמה';
+  $('authToggle').textContent   = authMode==='login'?'אין חשבון? הרשמה':'יש חשבון? כניסה';
+});
+
+$('authBtn').addEventListener('click', async () => {
+  const email = $('authEmail').value.trim(), pw = $('authPassword').value;
+  $('authError').classList.add('hidden');
+  $('authBtnLabel').textContent = '...'; $('authSpinner').classList.remove('hidden');
+  try {
+    if (authMode==='login') await auth.signInWithEmailAndPassword(email, pw);
+    else await auth.createUserWithEmailAndPassword(email, pw);
+  } catch(e) {
+    const M = {'auth/user-not-found':'משתמש לא נמצא.','auth/wrong-password':'סיסמה שגויה.','auth/invalid-email':'כתובת מייל לא תקינה.','auth/weak-password':'הסיסמה חייבת להכיל לפחות 6 תווים.','auth/email-already-in-use':'מייל זה כבר קיים.','auth/invalid-credential':'פרטי הכניסה שגויים.'};
+    $('authError').textContent = M[e.code]||e.message; $('authError').classList.remove('hidden');
+  } finally { $('authBtnLabel').textContent=authMode==='login'?'כניסה':'הרשמה'; $('authSpinner').classList.add('hidden'); }
+});
+['authEmail','authPassword'].forEach(id => $(id).addEventListener('keydown', e=>{ if(e.key==='Enter') $('authBtn').click(); }));
+
+function doLogout() { auth.signOut(); }
+
+/* ─── BOOTSTRAP ─── */
+auth.onAuthStateChanged(user => {
+  if (user) {
+    $('authScreen').style.display = 'none';
+    $('appRoot').classList.remove('hidden');
+    $('appRoot').style.display = '';
+    const init = (user.displayName||user.email||'?').charAt(0).toUpperCase();
+    $('sbAvatar').textContent = init;
+    $('sbName').textContent   = user.displayName||user.email.split('@')[0];
+    $('sbEmail').textContent  = user.email;
+    initListeners();
+    navigate('dashboard');
+  } else {
+    unsubs.forEach(u=>u()); unsubs=[];
+    $('appRoot').style.display = 'none';
+    $('authScreen').style.display = 'flex';
+  }
+});
+</script>
+</body>
+</html>
