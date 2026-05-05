@@ -61,7 +61,7 @@
   nav.top .cta {
     background:var(--amber); color:var(--ink); border:0;
     padding:12px 22px; font-weight:700; font-size:15px; cursor:pointer;
-    font-family:'Rubik',sans-serif;
+    font-family:'Rubik',sans-serif; text-decoration:none; display:inline-block;
     transition:transform 200ms, background 200ms;
   }
   nav.top .cta:hover { transform:translateY(-2px); background:#FBBF24; }
@@ -529,7 +529,7 @@
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <a href="dashboard.html" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:14px;font-weight:500;font-family:'Rubik',sans-serif;transition:color 200ms;" onmouseover="this.style.color='#F59E0B'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">כניסה ליועץ ↗</a>
-    <button class="cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">קבעו שיחה</button>
+    <a class="cta" href="wizard/dist/index.html">התחילו עכשיו ←</a>
   </div>
 </nav>
 
@@ -556,7 +556,7 @@
     <p class="lede">תכנון משכנתא בוטיק שחוסך לכם עשרות אלפי שקלים — ומונע הפתעות בהחזר החודשי.</p>
 
     <div class="hero__ctas">
-      <a class="btn" href="#calculator">בואו נבדוק כמה אפשר לחסוך <span class="arrow">←</span></a>
+      <a class="btn" href="wizard/dist/index.html">גלו כמה תוכלו לחסוך <span class="arrow">←</span></a>
       <a class="btn btn--ghost" href="#cta">שיחת ייעוץ ללא עלות</a>
     </div>
 
@@ -731,6 +731,13 @@
         </div>
       </div>
     </div>
+
+    <div class="reveal" style="text-align:center; margin-top:2.5rem;">
+      <a class="btn" href="wizard/dist/index.html" style="font-family:'Rubik',sans-serif;">
+        לחישוב מותאם אישית לפרופיל שלכם <span class="arrow">←</span>
+      </a>
+      <p style="font-family:'Rubik',sans-serif; font-size:13px; color:var(--muted); margin:10px 0 0;">5 דקות · ללא עלות · ללא התחייבות</p>
+    </div>
   </div>
 </section>
 
@@ -900,8 +907,8 @@
         <h2>בואו נבדוק כמה אפשר <span class="accent">לחסוך.</span></h2>
         <p>30 דקות שיחה. נבחן את הפרופיל שלכם, נציג טווח חיסכון אפשרי, ונחליט יחד איך להמשיך.</p>
         <div class="row">
-          <a class="btn" href="#">קבעו שיחה <span class="arrow">←</span></a>
-          <a class="btn btn--ghost" href="#">שלחו וואטסאפ</a>
+          <a class="btn" href="wizard/dist/index.html">גלו את הריביות שלכם <span class="arrow">←</span></a>
+          <a class="btn btn--ghost" href="https://wa.me/972500000000" target="_blank" rel="noopener">שלחו וואטסאפ</a>
         </div>
       </div>
 
